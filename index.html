@@ -756,9 +756,14 @@ function startLoop() {
         gameState.quietYears++;
         updateUI();
 
+        // 특별 사건이 발생하지 않은 해도 일대기 기록에 남긴다.
         if (checkAgeMilestone()) return;
         if (checkCityCrisis()) return;
-        if (gameState.quietYears >= 3) triggerRandomEvent();
+        if (gameState.quietYears >= 3) {
+            triggerRandomEvent();
+            return;
+        }
+        appendQuietYearLog();
     }, 3000 / gameState.speed);
 }
 
@@ -909,6 +914,41 @@ function showAdultEvent() {
         );
     }
     showStoryCard("성인이 된 뒤의 선택", "성인이 된 당신은 자신의 기술과 관계를 활용해 살아갑니다. 오늘의 선택도 도시와 당신의 미래에 작은 흔적을 남깁니다.", choices);
+}
+
+function appendQuietYearLog() {
+    const log = document.getElementById("story-log");
+    if (!log) return;
+
+    const card = document.createElement("div");
+    card.className = "event-card";
+    card.style.opacity = "0.78";
+    card.style.borderLeftColor = "var(--text-muted)";
+
+    const header = document.createElement("div");
+    header.className = "event-header";
+    header.innerHTML = `<span>AD ${gameState.year}</span><span>${gameState.age}세</span>`;
+
+    const title = document.createElement("div");
+    title.className = "event-title";
+    title.style.fontSize = "0.95rem";
+    title.textContent = "평온하게 지나간 한 해";
+
+    const desc = document.createElement("div");
+    desc.className = "event-desc";
+    desc.textContent = `별다른 사건 없이 한 해가 지났습니다. ${gameState.name}은(는) ${gameState.age}세가 되었고, 플로렌티아의 일상은 이어집니다.`;
+
+    card.append(header, title, desc);
+    log.appendChild(card);
+    log.scrollTop = log.scrollHeight;
+
+    gameState.history.push({
+        year: gameState.year,
+        age: gameState.age,
+        title: "평온하게 지나간 한 해",
+        detail: "별다른 사건 없이 일상을 보냈다."
+    });
+    renderChronicle();
 }
 
 function triggerRandomEvent() {
