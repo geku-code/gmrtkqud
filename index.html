@@ -97,10 +97,10 @@
             background: rgba(0, 240, 255, 0.1);
         }
 
-        /* Main Grid Body */
+        /* Main Grid Body - 2열 구조 (좌측 정보 + 중앙 스토리) */
         main {
             display: grid;
-            grid-template-columns: 320px 1fr 340px;
+            grid-template-columns: 340px 1fr;
             gap: 1px;
             background: var(--panel-border);
             overflow: hidden;
@@ -115,7 +115,7 @@
             overflow-y: auto;
         }
 
-        /* Left Panel: Character & City Status */
+        /* Left Panel */
         .section-title {
             font-size: 0.8rem;
             text-transform: uppercase;
@@ -318,7 +318,17 @@
             background: rgba(189, 0, 255, 0.2);
         }
 
-        /* Right Panel: Traits & Codex */
+        /* 소유 특성 하단 전용 박스 */
+        .traits-container-box {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 90px;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+
         .trait-tag {
             display: inline-flex;
             align-items: center;
@@ -328,7 +338,7 @@
             font-size: 0.75rem;
             background: rgba(255,255,255,0.03);
             border: 1px solid var(--panel-border);
-            margin: 2px;
+            margin: 3px;
         }
 
         .trait-tag.innate { border-color: var(--neon-cyan); color: var(--neon-cyan); }
@@ -504,7 +514,7 @@
 
     <!-- Main Game View -->
     <main>
-        <!-- Left Panel: Stats & City -->
+        <!-- Left Panel: Stats, City Metrics & Traits (소유 특성 하단 배치) -->
         <div class="panel">
             <div class="section-title">인물 프로필</div>
             <div class="profile-card">
@@ -522,7 +532,7 @@
                 <div class="stat-box"><div class="stat-label">면역 (IMM)</div><div class="stat-value" id="stat-imm">10</div></div>
             </div>
 
-            <div class="section-title" style="margin-top: 10px;">플로렌티아 지표</div>
+            <div class="section-title" style="margin-top: 5px;">플로렌티아 지표</div>
             <div class="city-metrics">
                 <div class="metric-bar-group">
                     <div class="metric-info"><span>감염률</span><span id="val-inf" style="color:var(--neon-crimson)">0%</span></div>
@@ -540,6 +550,12 @@
                     <div class="metric-info"><span>금고 재정</span><span id="val-gold" style="color:var(--neon-amber)">1000 Gold</span></div>
                 </div>
             </div>
+
+            <!-- 소유 특성 영역 (좌측 하단) -->
+            <div class="section-title" style="margin-top: 5px;">소유 특성</div>
+            <div class="traits-container-box" id="traits-list">
+                <!-- Traits tags inserted here -->
+            </div>
         </div>
 
         <!-- Center Panel: Story & Choices -->
@@ -554,25 +570,12 @@
                 </div>
             </div>
         </div>
-
-        <!-- Right Panel: Traits & Codex -->
-        <div class="panel">
-            <div class="section-title">소유 특성</div>
-            <div id="traits-list" style="display:flex; flex-wrap:wrap; gap:4px;">
-                <!-- Traits tags -->
-            </div>
-
-            <div class="section-title" style="margin-top: 15px;">역사적 생애 기록</div>
-            <div id="chronicle-mini-list" style="font-size:0.8rem; color:var(--text-muted); display:flex; flex-direction:column; gap:8px;">
-                <div>• AD 1320: 플로렌티아 출생</div>
-            </div>
-        </div>
     </main>
 
     <!-- Footer Status Bar -->
-    <footer style="background:var(--panel-bg); border-top:1px solid var(--panel-border); padding:0 20px; display:flex; align-items:center; justify-scale:space-between; font-size:0.8rem; color:var(--text-muted);">
+    <footer style="background:var(--panel-bg); border-top:1px solid var(--panel-border); padding:0 20px; display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; color:var(--text-muted);">
         <div><i class="fa-solid fa-shield-halved"></i> 시스템 상태: 정상 구동 중</div>
-        <div>절벽 위의 플로렌티아 v2.0</div>
+        <div>절벽 위의 플로렌티아 v2.1</div>
     </footer>
 </div>
 
@@ -657,7 +660,6 @@ const gameState = {
     gameEnded: false,
     plagueActive: false,
     plagueResolved: false,
-    visitedEvents: [],
     ending: null
 };
 
@@ -686,7 +688,6 @@ function changeCity(key, amount, min = 0, max = 100) {
 
 function addHistory(title, detail = "") {
     gameState.history.push({ year: gameState.year, age: gameState.age, title, detail });
-    renderChronicle();
 }
 
 function startGame() {
@@ -740,7 +741,7 @@ function updateUI() {
     if (traitContainer) {
         traitContainer.innerHTML = gameState.traits.map(t =>
             `<span class="trait-tag ${t.type}">${t.name}</span>`
-        ).join("");
+        ).join("") || '<span style="font-size:0.75rem; color:var(--text-muted);">보유한 특성이 없습니다.</span>';
     }
 }
 
@@ -756,7 +757,6 @@ function startLoop() {
         gameState.quietYears++;
         updateUI();
 
-        // 특별 사건이 발생하지 않은 해도 일대기 기록에 남긴다.
         if (checkAgeMilestone()) return;
         if (checkCityCrisis()) return;
         if (gameState.quietYears >= 3) {
@@ -848,7 +848,7 @@ function checkAgeMilestone() {
     }
 
     if (gameState.age === 45) {
-        showStoryCard("삶의 방향을 돌아보다", "여러 해가 흘렀습니다. 지금까지 쌓은 경험을 바탕으로 앞으로 무엇에 힘쓸지 결정합니다.", [
+        showStoryCard("삶의 방향을 돌아보다", "여러 해가 흐렀습니다. 지금까지 쌓은 경험을 바탕으로 앞으로 무엇에 힘쓸지 결정합니다.", [
             { text: "도시의 기반을 다진다 (위생 +10, 재정 -100)", action: () => { changeCity("sanitation", 10); gameState.city.gold -= 100; addHistory("도시의 기반", "도시 환경을 개선하는 데 자원을 사용했다."); } },
             { text: "사람들과 관계를 다진다 (사기 +10)", action: () => { changeCity("morale", 10); gameState.stats.cha += 2; addHistory("사람들과의 관계", "주변 사람들을 돕고 신뢰를 쌓았다."); } }
         ]);
@@ -942,13 +942,7 @@ function appendQuietYearLog() {
     log.appendChild(card);
     log.scrollTop = log.scrollHeight;
 
-    gameState.history.push({
-        year: gameState.year,
-        age: gameState.age,
-        title: "평온하게 지나간 한 해",
-        detail: "별다른 사건 없이 일상을 보냈다."
-    });
-    renderChronicle();
+    addHistory("평온하게 지나간 한 해", "별다른 사건 없이 일상을 보냈다.");
 }
 
 function triggerRandomEvent() {
@@ -1120,35 +1114,6 @@ function loadUnlockedJobs() {
     }
 }
 
-function rollDice(statKey, target, onSuccess, onFailure) {
-    openModal("modal-dice");
-    document.getElementById("dice-confirm-btn").style.display = "none";
-    document.getElementById("dice-check-title").textContent = `${statKey.toUpperCase()} 판정 수행 중...`;
-    let roll = 0;
-    let count = 0;
-    const interval = setInterval(() => {
-        roll = Math.floor(Math.random() * 100) + 1;
-        document.getElementById("dice-result-num").innerText = roll;
-        count++;
-        if (count > 10) {
-            clearInterval(interval);
-            const adjustedTarget = clamp(target + Math.floor((gameState.stats[statKey] - 10) / 2), 5, 95);
-            const success = roll <= adjustedTarget;
-            document.getElementById("dice-target-info").innerText = `주사위: ${roll} / 성공 기준: ${adjustedTarget} (${success ? "성공" : "실패"})`;
-            if (success) onSuccess(); else onFailure();
-            updateUI();
-            document.getElementById("dice-confirm-btn").style.display = "block";
-            document.getElementById("dice-confirm-btn").onclick = () => {
-                closeModal("modal-dice");
-                if (!gameState.pendingEdu && !gameState.gameEnded) {
-                    gameState.speed = 1;
-                    startLoop();
-                }
-            };
-        }
-    }, 50);
-}
-
 function showEduModal(text) {
     gameState.pendingEdu = true;
     if (gameState.timer) clearInterval(gameState.timer);
@@ -1165,15 +1130,6 @@ function closeEduModal() {
         gameState.speed = 1;
         startLoop();
     }
-}
-
-function renderChronicle() {
-    const container = document.getElementById("chronicle-mini-list");
-    if (!container) return;
-    const recent = gameState.history.slice(-8).reverse();
-    container.innerHTML = recent.map(item =>
-        `<div>• AD ${item.year}: ${escapeHTML(item.title)}</div>`
-    ).join("") || "<div>기록이 없습니다.</div>";
 }
 
 function escapeHTML(value) {
@@ -1233,7 +1189,7 @@ function restartGame() {
         job: null, stats: { int: 10, phy: 10, sen: 10, cha: 10, dex: 10, imm: 10 },
         city: { infection: 0, morale: 80, sanitation: 60, gold: 1000 }, traits: [],
         unlockedJobs: [], history: [], pendingEdu: false, gameStarted: false, gameEnded: false,
-        plagueActive: false, plagueResolved: false, visitedEvents: [], ending: null
+        plagueActive: false, plagueResolved: false, ending: null
     });
     loadUnlockedJobs();
     document.getElementById("story-log").innerHTML = "";
@@ -1245,7 +1201,6 @@ function restartGame() {
     const eduButton = document.querySelector("#modal-edu .modal-body > button");
     eduButton.textContent = "이해했습니다";
     eduButton.onclick = closeEduModal;
-    document.getElementById("chronicle-mini-list").innerHTML = "<div>• AD 1320: 플로렌티아 출생</div>";
     updateUI();
     renderCodex();
 }
