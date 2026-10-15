@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>절벽 위의 플로렌티아 (Plague of Florentia)</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -25,6 +25,7 @@
             padding: 0;
             font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -44,7 +45,7 @@
             max-height: 900px;
             background: var(--bg-dark);
             display: grid;
-            grid-template-rows: 60px 1fr 60px;
+            grid-template-rows: 60px 1fr 50px;
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
             border: 1px solid var(--panel-border);
             position: relative;
@@ -57,26 +58,26 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 15px;
         }
 
         .title-brand {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 800;
             color: var(--neon-cyan);
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .time-control {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             background: rgba(0,0,0,0.4);
-            padding: 5px 15px;
+            padding: 4px 10px;
             border-radius: 20px;
             border: 1px solid var(--panel-border);
         }
@@ -86,9 +87,9 @@
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            padding: 4px 8px;
+            padding: 4px 6px;
             border-radius: 4px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: all 0.2s;
         }
 
@@ -97,10 +98,10 @@
             background: rgba(0, 240, 255, 0.1);
         }
 
-        /* Main Grid Body - 2열 구조 (좌측 정보 + 중앙 스토리) */
+        /* Main Grid Body - 기본 PC 데스크톱 2열 구조 */
         main {
             display: grid;
-            grid-template-columns: 340px 1fr;
+            grid-template-columns: 320px 1fr;
             gap: 1px;
             background: var(--panel-border);
             overflow: hidden;
@@ -108,21 +109,21 @@
 
         .panel {
             background: var(--panel-bg);
-            padding: 18px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             overflow-y: auto;
         }
 
-        /* Left Panel */
+        /* Status & Traits */
         .section-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.2px;
             color: var(--text-muted);
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 6px;
+            padding-bottom: 4px;
             display: flex;
             justify-content: space-between;
         }
@@ -131,17 +132,17 @@
             background: rgba(0,0,0,0.3);
             border: 1px solid var(--panel-border);
             border-radius: 8px;
-            padding: 12px;
+            padding: 10px;
         }
 
         .char-name {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #fff;
         }
 
         .char-job {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--neon-amber);
             margin-top: 2px;
         }
@@ -149,23 +150,23 @@
         .stat-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 6px;
         }
 
         .stat-box {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.05);
-            padding: 8px;
+            padding: 6px 8px;
             border-radius: 6px;
         }
 
         .stat-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
         }
 
         .stat-value {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--neon-cyan);
         }
@@ -173,23 +174,23 @@
         .city-metrics {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .metric-bar-group {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
 
         .metric-info {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
         }
 
         .bar-bg {
-            height: 6px;
+            height: 5px;
             background: rgba(255,255,255,0.05);
             border-radius: 3px;
             overflow: hidden;
@@ -201,29 +202,30 @@
             transition: width 0.4s ease;
         }
 
-        /* Center Panel: Story & Log Display */
+        /* Center Panel: Story & Choices */
         .story-container {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             background: #090c14;
             position: relative;
+            overflow: hidden;
         }
 
         .story-scroll-area {
             flex: 1;
-            padding: 25px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .event-card {
-            background: rgba(15, 19, 29, 0.7);
+            background: rgba(15, 19, 29, 0.8);
             border-left: 3px solid var(--neon-cyan);
             border-radius: 0 8px 8px 0;
-            padding: 16px;
+            padding: 14px;
             animation: fadeIn 0.3s ease;
         }
 
@@ -238,23 +240,23 @@
         }
 
         .event-header {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             display: flex;
             justify-content: space-between;
         }
 
         .event-title {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: #fff;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .event-desc {
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 0.92rem;
+            line-height: 1.55;
             color: var(--text-main);
         }
 
@@ -262,14 +264,14 @@
         .choice-panel {
             background: var(--panel-bg);
             border-top: 1px solid var(--panel-border);
-            padding: 15px;
+            padding: 12px 15px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .timer-bar-container {
-            height: 4px;
+            height: 3px;
             background: rgba(255,255,255,0.05);
             width: 100%;
             border-radius: 2px;
@@ -285,27 +287,27 @@
         .choices-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 8px;
+            gap: 6px;
         }
 
         .choice-btn {
             background: rgba(255,255,255,0.02);
             border: 1px solid var(--panel-border);
             color: var(--text-main);
-            padding: 12px 15px;
+            padding: 12px 14px;
             border-radius: 6px;
             cursor: pointer;
             text-align: left;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             transition: all 0.2s;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .choice-btn:hover {
+        .choice-btn:hover, .choice-btn:active {
             border-color: var(--neon-cyan);
-            background: rgba(0, 240, 255, 0.05);
+            background: rgba(0, 240, 255, 0.08);
             color: #fff;
         }
 
@@ -314,31 +316,27 @@
             background: rgba(189, 0, 255, 0.08);
         }
 
-        .choice-btn.hidden-route:hover {
-            background: rgba(189, 0, 255, 0.2);
-        }
-
-        /* 소유 특성 하단 전용 박스 */
+        /* Traits Box */
         .traits-container-box {
             background: rgba(0,0,0,0.3);
             border: 1px solid var(--panel-border);
             border-radius: 8px;
-            padding: 10px;
-            min-height: 90px;
-            max-height: 140px;
+            padding: 8px;
+            min-height: 70px;
+            max-height: 120px;
             overflow-y: auto;
         }
 
         .trait-tag {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 8px;
+            gap: 5px;
+            padding: 3px 6px;
             border-radius: 4px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             background: rgba(255,255,255,0.03);
             border: 1px solid var(--panel-border);
-            margin: 3px;
+            margin: 2px;
         }
 
         .trait-tag.innate { border-color: var(--neon-cyan); color: var(--neon-cyan); }
@@ -355,32 +353,32 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 40px;
+            padding: 25px;
         }
 
         .game-title-large {
-            font-size: 2.8rem;
+            font-size: 2.2rem;
             font-weight: 900;
             color: var(--neon-cyan);
             text-shadow: 0 0 20px rgba(0,240,255,0.5);
-            letter-spacing: 4px;
-            margin-bottom: 10px;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
             text-align: center;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             width: 100%;
-            max-width: 320px;
-            margin: 20px 0;
+            max-width: 280px;
+            margin: 15px 0;
         }
 
         .input-group input {
             background: rgba(0,0,0,0.5);
             border: 1px solid var(--neon-cyan);
-            padding: 12px;
+            padding: 10px;
             border-radius: 6px;
             color: #fff;
             font-size: 1rem;
@@ -393,25 +391,26 @@
             color: #000;
             font-weight: 800;
             border: none;
-            padding: 14px 28px;
+            padding: 12px 24px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: all 0.2s;
             box-shadow: 0 0 15px rgba(0,240,255,0.3);
+            width: 100%;
+            max-width: 280px;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(0,240,255,0.6);
+        .btn-primary:active {
+            transform: scale(0.98);
         }
 
         .nav-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
-            max-width: 320px;
+            max-width: 280px;
             margin-top: 10px;
         }
 
@@ -422,13 +421,8 @@
             padding: 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: all 0.2s;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
         }
 
         /* Modals */
@@ -441,7 +435,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .modal-content {
@@ -449,8 +443,8 @@
             border: 1px solid var(--panel-border);
             border-radius: 12px;
             width: 100%;
-            max-width: 650px;
-            max-height: 80vh;
+            max-width: 500px;
+            max-height: 85vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -458,38 +452,88 @@
         }
 
         .modal-header {
-            padding: 15px 20px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--panel-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 0.95rem;
         }
 
         .modal-body {
-            padding: 20px;
+            padding: 16px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            font-size: 0.9rem;
         }
 
-        /* Dice Modal */
         .dice-box {
             text-align: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .dice-val {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 900;
             color: var(--neon-amber);
             text-shadow: 0 0 20px rgba(255,170,0,0.5);
-            margin: 15px 0;
+            margin: 10px 0;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 📱 모바일 반응형 미디어 쿼리 (화면 너비 768px 이하) */
+        @media screen and (max-width: 768px) {
+            .game-wrapper {
+                grid-template-rows: 50px 1fr 45px;
+                height: 100vh;
+                height: 100dvh; /* 모바일 브라우저 주소창 대응 */
+                border: none;
+            }
+
+            main {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                overflow-y: auto;
+            }
+
+            /* 모바일에서는 캐릭터 스탯/지표 패널을 접이식 또는 상단 컴팩트 뷰로 전환 */
+            .panel {
+                max-height: 200px;
+                padding: 10px 12px;
+                gap: 8px;
+                border-bottom: 1px solid var(--panel-border);
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .story-container {
+                min-height: 300px;
+            }
+
+            .story-scroll-area {
+                padding: 15px;
+            }
+
+            .choice-panel {
+                padding: 10px;
+            }
+
+            .choice-btn {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+            }
+
+            .game-title-large {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
@@ -499,12 +543,12 @@
     <!-- Main Header -->
     <header>
         <div class="title-brand">
-            <i class="fa-solid fa-biohazard"></i> PLAGUE OF FLORENTIA
+            <i class="fa-solid fa-biohazard"></i> FLORENTIA
         </div>
         <div class="time-control">
-            <span id="game-year" style="font-weight: 700; color: #fff;">AD 1320</span>
-            <span id="game-age" style="color: var(--neon-cyan); font-size: 0.9rem;">(0세)</span>
-            <div style="height: 12px; width: 1px; background: var(--panel-border); margin: 0 5px;"></div>
+            <span id="game-year" style="font-weight: 700; color: #fff; font-size: 0.85rem;">AD 1320</span>
+            <span id="game-age" style="color: var(--neon-cyan); font-size: 0.8rem;">(0세)</span>
+            <div style="height: 10px; width: 1px; background: var(--panel-border); margin: 0 3px;"></div>
             <button class="speed-btn" onclick="setSpeed(0)"><i class="fa-solid fa-pause"></i></button>
             <button class="speed-btn active" onclick="setSpeed(1)">1x</button>
             <button class="speed-btn" onclick="setSpeed(2)">2x</button>
@@ -514,45 +558,34 @@
 
     <!-- Main Game View -->
     <main>
-        <!-- Left Panel: Stats, City Metrics & Traits (소유 특성 하단 배치) -->
+        <!-- Left Panel: Stats, City Metrics & Traits -->
         <div class="panel">
-            <div class="section-title">인물 프로필</div>
-            <div class="profile-card">
-                <div class="char-name" id="ui-char-name">레오나르도</div>
-                <div class="char-job" id="ui-char-job">무직 (유년기)</div>
+            <div class="profile-card" style="padding: 8px 10px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div class="char-name" id="ui-char-name" style="font-size: 1rem;">레오나르도</div>
+                    <div class="char-job" id="ui-char-job" style="font-size: 0.75rem;">무직 (유년기)</div>
+                </div>
             </div>
 
-            <div class="section-title">능력치 (Attributes)</div>
             <div class="stat-grid">
-                <div class="stat-box"><div class="stat-label">지능 (INT)</div><div class="stat-value" id="stat-int">10</div></div>
-                <div class="stat-box"><div class="stat-label">체력 (PHY)</div><div class="stat-value" id="stat-phy">10</div></div>
-                <div class="stat-box"><div class="stat-label">감각 (SEN)</div><div class="stat-value" id="stat-sen">10</div></div>
-                <div class="stat-box"><div class="stat-label">매력 (CHA)</div><div class="stat-value" id="stat-cha">10</div></div>
-                <div class="stat-box"><div class="stat-label">수완 (DEX)</div><div class="stat-value" id="stat-dex">10</div></div>
-                <div class="stat-box"><div class="stat-label">면역 (IMM)</div><div class="stat-value" id="stat-imm">10</div></div>
+                <div class="stat-box"><div class="stat-label">지능</div><div class="stat-value" id="stat-int">10</div></div>
+                <div class="stat-box"><div class="stat-label">체력</div><div class="stat-value" id="stat-phy">10</div></div>
+                <div class="stat-box"><div class="stat-label">감각</div><div class="stat-value" id="stat-sen">10</div></div>
+                <div class="stat-box"><div class="stat-label">매력</div><div class="stat-value" id="stat-cha">10</div></div>
+                <div class="stat-box"><div class="stat-label">수완</div><div class="stat-value" id="stat-dex">10</div></div>
+                <div class="stat-box"><div class="stat-label">면역</div><div class="stat-value" id="stat-imm">10</div></div>
             </div>
 
-            <div class="section-title" style="margin-top: 5px;">플로렌티아 지표</div>
             <div class="city-metrics">
                 <div class="metric-bar-group">
                     <div class="metric-info"><span>감염률</span><span id="val-inf" style="color:var(--neon-crimson)">0%</span></div>
                     <div class="bar-bg"><div class="bar-fill" id="bar-inf" style="background:var(--neon-crimson); width:0%;"></div></div>
                 </div>
                 <div class="metric-bar-group">
-                    <div class="metric-info"><span>시민 사기</span><span id="val-mor" style="color:var(--neon-emerald)">80%</span></div>
-                    <div class="bar-bg"><div class="bar-fill" id="bar-mor" style="background:var(--neon-emerald); width:80%;"></div></div>
-                </div>
-                <div class="metric-bar-group">
-                    <div class="metric-info"><span>도시 위생</span><span id="val-san" style="color:var(--neon-cyan)">60%</span></div>
-                    <div class="bar-bg"><div class="bar-fill" id="bar-san" style="background:var(--neon-cyan); width:60%;"></div></div>
-                </div>
-                <div class="metric-bar-group">
-                    <div class="metric-info"><span>금고 재정</span><span id="val-gold" style="color:var(--neon-amber)">1000 Gold</span></div>
+                    <div class="metric-info"><span>시민 사기 / 위생 / 재정</span><span id="val-gold" style="color:var(--neon-amber)">1000 G</span></div>
                 </div>
             </div>
 
-            <!-- 소유 특성 영역 (좌측 하단) -->
-            <div class="section-title" style="margin-top: 5px;">소유 특성</div>
             <div class="traits-container-box" id="traits-list">
                 <!-- Traits tags inserted here -->
             </div>
@@ -573,19 +606,19 @@
     </main>
 
     <!-- Footer Status Bar -->
-    <footer style="background:var(--panel-bg); border-top:1px solid var(--panel-border); padding:0 20px; display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; color:var(--text-muted);">
-        <div><i class="fa-solid fa-shield-halved"></i> 시스템 상태: 정상 구동 중</div>
-        <div>절벽 위의 플로렌티아 v2.1</div>
+    <footer style="background:var(--panel-bg); border-top:1px solid var(--panel-border); padding:0 15px; display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
+        <div><i class="fa-solid fa-shield-halved"></i> 안정 구동</div>
+        <div>플로렌티아 v2.2 Mobile</div>
     </footer>
 </div>
 
-<!-- Start Overlay Modal -->
+<!-- Start Overlay Screen -->
 <div class="overlay-screen" id="start-overlay">
     <div class="game-title-large">절벽 위의 플로렌티아</div>
-    <div style="color: var(--text-muted); margin-bottom: 20px;">Plague of Florentia: Life Chronology</div>
+    <div style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem; text-align: center;">Plague of Florentia: Life Chronology</div>
     
     <div class="input-group">
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">인물 이름을 입력하십시오</label>
+        <label style="font-size: 0.75rem; color: var(--text-muted); text-align: center;">인물 이름을 입력하십시오</label>
         <input type="text" id="player-name-input" value="레오나르도" maxlength="10">
     </div>
 
@@ -593,21 +626,21 @@
 
     <div class="nav-grid">
         <button class="btn-secondary" onclick="openModal('modal-history')">지난 삶 회고</button>
-        <button class="btn-secondary" onclick="openModal('modal-codex')">직업 & 엔딩 도감</button>
+        <button class="btn-secondary" onclick="openModal('modal-codex')">직업 & 도감</button>
     </div>
 </div>
 
 <!-- Dice Modal -->
 <div class="modal" id="modal-dice">
-    <div class="modal-content" style="max-width: 400px;">
+    <div class="modal-content" style="max-width: 360px;">
         <div class="modal-header">
-            <span style="font-weight:700;">1D100 운명의 주사위</span>
+            <span>1D100 운명의 주사위</span>
         </div>
         <div class="modal-body dice-box">
-            <div style="font-size: 0.9rem; color: var(--text-muted);" id="dice-check-title">체력 판정 수행 중...</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);" id="dice-check-title">판정 수행 중...</div>
             <div class="dice-val" id="dice-result-num">--</div>
-            <div id="dice-target-info" style="font-size: 0.85rem; color: var(--neon-cyan);">목표치: 50 이하 (성공)</div>
-            <button class="btn-primary" id="dice-confirm-btn" style="margin-top:20px; width:100%; display:none;" onclick="closeModal('modal-dice')">결과 확인</button>
+            <div id="dice-target-info" style="font-size: 0.8rem; color: var(--neon-cyan);">목표치 확인 중</div>
+            <button class="btn-primary" id="dice-confirm-btn" style="margin-top:15px; width:100%; display:none; max-width:100%;" onclick="closeModal('modal-dice')">결과 확인</button>
         </div>
     </div>
 </div>
@@ -616,11 +649,11 @@
 <div class="modal" id="modal-edu">
     <div class="modal-content">
         <div class="modal-header">
-            <span style="font-weight:700; color:var(--neon-cyan);"><i class="fa-solid fa-book-medical"></i> 역사 & 의학 노트</span>
+            <span style="color:var(--neon-cyan);"><i class="fa-solid fa-book-medical"></i> 역사 & 의학 노트</span>
         </div>
         <div class="modal-body">
-            <div id="edu-content" style="line-height:1.6; font-size:0.95rem;"></div>
-            <button class="btn-primary" style="margin-top:15px;" onclick="closeEduModal()">이해했습니다</button>
+            <div id="edu-content" style="line-height:1.5; font-size:0.9rem;"></div>
+            <button class="btn-primary" style="margin-top:10px; width:100%; max-width:100%;" onclick="closeEduModal()">확인 및 계속</button>
         </div>
     </div>
 </div>
@@ -628,20 +661,20 @@
 <!-- History & Codex Modals -->
 <div class="modal" id="modal-history">
     <div class="modal-content">
-        <div class="modal-header"><span>지난 삶 회고</span><button class="btn-secondary" onclick="closeModal('modal-history')">닫기</button></div>
+        <div class="modal-header"><span>지난 삶 회고</span><button class="btn-secondary" onclick="closeModal('modal-history')" style="padding:4px 8px;">닫기</button></div>
         <div class="modal-body" id="history-list-body">기록된 지난 삶이 없습니다.</div>
     </div>
 </div>
 
 <div class="modal" id="modal-codex">
     <div class="modal-content">
-        <div class="modal-header"><span>직업 및 엔딩 도감</span><button class="btn-secondary" onclick="closeModal('modal-codex')">닫기</button></div>
+        <div class="modal-header"><span>직업 및 엔딩 도감</span><button class="btn-secondary" onclick="closeModal('modal-codex')" style="padding:4px 8px;">닫기</button></div>
         <div class="modal-body" id="codex-list-body"></div>
     </div>
 </div>
 
 <script>
-/* 절벽 위의 플로렌티아: 게임 엔진 */
+/* 절벽 위의 플로렌티아: 모바일 최적화 게임 엔진 */
 const gameState = {
     name: "레오나르도",
     year: 1320,
@@ -668,7 +701,7 @@ const JOBS = {
     merchant: { name: "무역 상인", type: "basic", desc: "자금 확보와 교역 수단 활용" },
     clerk: { name: "행정 서기", type: "basic", desc: "도시 자원 배분 및 격리 구역 지정" },
     priest: { name: "위령 사제", type: "basic", desc: "시민 사기 유지와 구호 활동" },
-    herbalist: { name: "약초 연구자", type: "hidden", desc: "약초와 기록을 바탕으로 보조 치료법을 탐색" },
+    herbalist: { name: "약초 연구자", type: "hidden", desc: "약초와 기록을 바탕으로 보조 치료법 탐색" },
     chronicler: { name: "역사 기록자", type: "hidden", desc: "역병의 전파와 사회적 양상을 기록" }
 };
 
@@ -724,24 +757,15 @@ function updateUI() {
     setText("stat-imm", gameState.stats.imm);
 
     setText("val-inf", `${gameState.city.infection}%`);
-    setText("val-mor", `${gameState.city.morale}%`);
-    setText("val-san", `${gameState.city.sanitation}%`);
-    setText("val-gold", `${gameState.city.gold} Gold`);
-    const widths = [
-        ["bar-inf", gameState.city.infection],
-        ["bar-mor", gameState.city.morale],
-        ["bar-san", gameState.city.sanitation]
-    ];
-    widths.forEach(([id, value]) => {
-        const el = document.getElementById(id);
-        if (el) el.style.width = `${clamp(value)}%`;
-    });
+    setText("val-gold", `${gameState.city.gold}G | 위생:${gameState.city.sanitation}% | 사기:${gameState.city.morale}%`);
+    const barInf = document.getElementById("bar-inf");
+    if(barInf) barInf.style.width = `${clamp(gameState.city.infection)}%`;
 
     const traitContainer = document.getElementById("traits-list");
     if (traitContainer) {
         traitContainer.innerHTML = gameState.traits.map(t =>
             `<span class="trait-tag ${t.type}">${t.name}</span>`
-        ).join("") || '<span style="font-size:0.75rem; color:var(--text-muted);">보유한 특성이 없습니다.</span>';
+        ).join("") || '<span style="font-size:0.7rem; color:var(--text-muted);">보유 특성 없음</span>';
     }
 }
 
@@ -781,80 +805,54 @@ function setSpeed(spd) {
 
 function checkAgeMilestone() {
     if (gameState.age === 5) {
-        showStoryCard("유년기의 시련", "다섯 살이 되던 해, 플로렌티아 주변에 열병이 돌기 시작했습니다. 어른들은 아이들을 집 안에서 쉬게 하려 합니다.", [
+        showStoryCard("유년기의 시련", "다섯 살이 되던 해, 플로렌티아 주변에 열병이 돌기 시작했습니다.", [
             { text: "몸 상태를 살피며 충분히 쉰다", action: () => { gameState.stats.phy += 2; addHistory("유년기의 시련", "휴식을 선택해 체력을 조금 길렀다."); } },
-            { text: "약초상에게 가서 치료법을 물어본다", action: () => { gameState.stats.sen += 2; gameState.stats.int += 1; addHistory("약초상과의 만남", "주변 사람에게 도움을 구하는 법을 배웠다."); } }
+            { text: "약초상에게 가서 치료법을 물어본다", action: () => { gameState.stats.sen += 2; gameState.stats.int += 1; addHistory("약초상과의 만남", "주변 사람에게 도움을 구했다."); } }
         ]);
         return true;
     }
-
     if (gameState.age === 10) {
-        const rareRoll = Math.random();
-        if (rareRoll < 0.08) {
-            showStoryCard("희귀한 만남", "골목길에서 오래된 약초 기록을 읽고 있는 수상한 약초상을 만났습니다. 그는 식물의 특징을 기록하는 일을 도와줄 아이를 찾고 있습니다.", [
-                { text: "약초 기록을 정리하는 일을 돕는다 (숨겨진 직업 단서)", class: "hidden-route", action: () => {
+        if (Math.random() < 0.08) {
+            showStoryCard("희귀한 만남", "골목길에서 오래된 약초 기록을 읽고 있는 수상한 약초상을 만났습니다.", [
+                { text: "약초 기록을 정리하는 일을 돕는다 [약초 연구자 해금]", class: "hidden-route", action: () => {
                     unlockJob("herbalist");
                     gameState.stats.int += 3;
-                    gameState.stats.sen += 3;
-                    gameState.traits.push({ id: "herbal-note", name: "약초 기록의 견습", type: "acquired", desc: "약초 연구자 경로 단서" });
-                    addHistory("희귀한 만남", "약초 연구자의 길로 이어질 단서를 얻었다.");
+                    gameState.traits.push({ id: "herbal-note", name: "약초 기록의 견습", type: "acquired", desc: "약초 연구자 단서" });
+                    addHistory("희귀한 만남", "약초 연구자의 길 단서 획득");
                 }},
-                { text: "가족에게 돌아간다", action: () => { gameState.stats.cha += 2; addHistory("골목길의 만남", "낯선 사람과 거리를 두고 집으로 돌아갔다."); } }
+                { text: "가족에게 돌아간다", action: () => { gameState.stats.cha += 2; addHistory("골목길", "집으로 돌아갔다."); } }
             ], "rare");
         } else {
-            showStoryCard("재능의 발현", "장인들이 아이들의 재능을 살피러 왔습니다. 어떤 경험을 쌓느냐에 따라 훗날의 진로가 달라질 수 있습니다.", [
-                { text: "서재에서 학술 서적을 읽는다 (지능 +5)", action: () => { gameState.stats.int += 5; addHistory("재능의 발현", "책을 읽으며 지식을 쌓았다."); } },
-                { text: "시장 거리에서 상인들의 흥정을 관찰한다 (수완 +5)", action: () => { gameState.stats.dex += 5; gameState.stats.cha += 1; addHistory("시장 거리의 관찰", "흥정과 사람들의 태도를 관찰했다."); } }
+            showStoryCard("재능의 발현", "장인들이 아이들의 재능을 살피러 왔습니다.", [
+                { text: "서재에서 학술 서적을 읽는다 (지능 +5)", action: () => { gameState.stats.int += 5; addHistory("재능", "지식을 쌓았다."); } },
+                { text: "시장 거리에서 상인들의 흥정을 관찰한다 (수완 +5)", action: () => { gameState.stats.dex += 5; addHistory("재능", "흥정을 관찰했다."); } }
             ]);
         }
         return true;
     }
-
     if (gameState.age === 13) {
         showJobSelection();
         return true;
     }
-
     if (gameState.age === 18) {
-        showStoryCard("견습의 끝", "몇 해 동안 배운 기술을 사람들 앞에서 보여줄 때가 왔습니다. 이 경험은 앞으로의 삶에 영향을 줍니다.", [
-            { text: "스승의 추천을 받아 일자리를 구한다", action: () => {
-                gameState.stats.cha += 3;
-                if (gameState.job === "역학 의사") gameState.stats.int += 3;
-                if (gameState.job === "무역 상인") gameState.stats.dex += 3;
-                if (gameState.job === "행정 서기") gameState.stats.int += 2;
-                if (gameState.job === "위령 사제") gameState.stats.cha += 2;
-                if (gameState.job === "약초 연구자") gameState.stats.sen += 3;
-                if (gameState.job === "역사 기록자") gameState.stats.int += 3;
-                addHistory("견습의 끝", `${gameState.job || "선택한 진로"}에서 첫 발을 내디뎠다.`);
-            }},
-            { text: "새로운 기술을 배우며 진로를 넓힌다", action: () => { gameState.stats.int += 2; gameState.stats.dex += 2; gameState.city.gold -= 50; addHistory("새로운 기술", "돈을 들여 새로운 기술을 익혔다."); } }
+        showStoryCard("견습의 끝", "기술을 사람들 앞에서 선보일 때가 되었습니다.", [
+            { text: "스승의 추천을 받아 일자리를 구한다", action: () => { gameState.stats.cha += 3; addHistory("견습 완료", "일자리를 구했다."); } },
+            { text: "새로운 기술을 배우며 진로를 넓힌다", action: () => { gameState.stats.int += 2; gameState.city.gold -= 50; addHistory("기술 습득", "새로운 기술을 익혔다."); } }
         ]);
         return true;
     }
-
     if (gameState.age === 24) {
         showAdultEvent();
         return true;
     }
-
     if (gameState.age === 28 && !gameState.plagueActive) {
         triggerPlagueOutbreak();
         return true;
     }
-
     if (gameState.age === 35 && gameState.plagueActive && !gameState.plagueResolved) {
         showPlagueAftermath();
         return true;
     }
-
-    if (gameState.age === 45) {
-        showStoryCard("삶의 방향을 돌아보다", "여러 해가 흐렀습니다. 지금까지 쌓은 경험을 바탕으로 앞으로 무엇에 힘쓸지 결정합니다.", [
-            { text: "도시의 기반을 다진다 (위생 +10, 재정 -100)", action: () => { changeCity("sanitation", 10); gameState.city.gold -= 100; addHistory("도시의 기반", "도시 환경을 개선하는 데 자원을 사용했다."); } },
-            { text: "사람들과 관계를 다진다 (사기 +10)", action: () => { changeCity("morale", 10); gameState.stats.cha += 2; addHistory("사람들과의 관계", "주변 사람들을 돕고 신뢰를 쌓았다."); } }
-        ]);
-        return true;
-    }
-
     if (gameState.age >= 60) {
         endGame();
         return true;
@@ -865,175 +863,70 @@ function checkAgeMilestone() {
 function showJobSelection() {
     const available = ["doctor", "merchant", "clerk", "priest", ...gameState.unlockedJobs];
     const choices = available.filter(id => JOBS[id]).map(id => ({
-        text: `[진로 선택] ${JOBS[id].name} — ${JOBS[id].desc}`,
+        text: `[진로] ${JOBS[id].name} — ${JOBS[id].desc}`,
         action: () => {
             gameState.job = JOBS[id].name;
             addHistory("진로 선택", `${gameState.job}의 길을 선택했다.`);
             updateUI();
         }
     }));
-    showStoryCard("13세: 견습과 진로 선택", "인생의 첫 진로를 결정할 시기입니다. 어떤 길을 선택하든 장점과 어려움이 따릅니다.", choices);
+    showStoryCard("13세: 견습과 진로 선택", "인생의 첫 진로를 결정할 시기입니다.", choices);
 }
 
 function showAdultEvent() {
-    const choices = [];
-    if (gameState.job === "역학 의사") {
-        choices.push(
-            { text: "환자들을 돌보고 감염 양상을 기록한다 (지능 +3, 사기 +3)", action: () => { gameState.stats.int += 3; changeCity("morale", 3); addHistory("환자 돌봄", "환자들을 돌보며 질병의 양상을 기록했다."); } },
-            { text: "도시의 위생 환경 개선을 제안한다 (위생 +8, 재정 -100)", action: () => { changeCity("sanitation", 8); gameState.city.gold -= 100; addHistory("위생 개선 제안", "도시의 위생 환경을 개선하는 데 힘썼다."); } }
-        );
-    } else if (gameState.job === "무역 상인") {
-        choices.push(
-            { text: "안정적인 교역로를 확보한다 (재정 +250)", action: () => { gameState.city.gold += 250; gameState.stats.dex += 2; addHistory("교역로 확보", "안정적인 거래처를 확보했다."); } },
-            { text: "식량을 비축해 어려운 이웃에게 나눈다 (재정 -100, 사기 +8)", action: () => { gameState.city.gold -= 100; changeCity("morale", 8); addHistory("식량 나눔", "비축한 식량을 이웃과 나누었다."); } }
-        );
-    } else if (gameState.job === "행정 서기") {
-        choices.push(
-            { text: "도시 예산을 정리하고 공공시설을 수리한다 (위생 +5, 재정 -80)", action: () => { changeCity("sanitation", 5); gameState.city.gold -= 80; gameState.stats.int += 2; addHistory("도시 행정", "예산과 공공시설을 정비했다."); } },
-            { text: "시민들의 요구를 듣고 지원책을 마련한다 (사기 +8)", action: () => { changeCity("morale", 8); gameState.stats.cha += 2; addHistory("시민 의견 수렴", "시민들의 요구를 듣고 지원책을 마련했다."); } }
-        );
-    } else if (gameState.job === "위령 사제") {
-        choices.push(
-            { text: "불안해하는 시민들을 위로한다 (사기 +10)", action: () => { changeCity("morale", 10); gameState.stats.cha += 2; addHistory("시민 위로", "불안한 이웃을 위로하고 구호 활동을 도왔다."); } },
-            { text: "구호 물자를 모은다 (재정 -100, 사기 +5)", action: () => { gameState.city.gold -= 100; changeCity("morale", 5); addHistory("구호 활동", "구호 물자를 모아 필요한 사람들에게 전달했다."); } }
-        );
-    } else if (gameState.job === "약초 연구자") {
-        choices.push(
-            { text: "약초의 특징을 기록하고 비교한다 (지능 +3, 감각 +3)", action: () => { gameState.stats.int += 3; gameState.stats.sen += 3; addHistory("약초 기록", "약초의 특징을 기록하고 비교했다."); } },
-            { text: "지역 치료자들과 관찰 결과를 나눈다 (사기 +4, 감각 +2)", action: () => { changeCity("morale", 4); gameState.stats.sen += 2; addHistory("지식 공유", "관찰 결과를 지역 치료자들과 나누었다."); } }
-        );
-    } else if (gameState.job === "역사 기록자") {
-        choices.push(
-            { text: "시장의 변화와 사람들의 이동을 기록한다 (지능 +4)", action: () => { gameState.stats.int += 4; addHistory("도시 기록", "시장의 변화와 사람들의 이동을 기록했다."); } },
-            { text: "시민들의 이야기를 모아 보존한다 (사기 +5, 매력 +2)", action: () => { changeCity("morale", 5); gameState.stats.cha += 2; addHistory("시민들의 이야기", "시민들의 경험을 기록으로 남겼다."); } }
-        );
-    } else {
-        choices.push(
-            { text: "일에 집중해 돈을 모은다 (재정 +150)", action: () => { gameState.city.gold += 150; gameState.stats.dex += 2; addHistory("생업에 집중", "꾸준히 일하며 자원을 모았다."); } },
-            { text: "이웃의 일을 돕는다 (사기 +5, 매력 +2)", action: () => { changeCity("morale", 5); gameState.stats.cha += 2; addHistory("이웃 돕기", "주변 사람들과 협력했다."); } }
-        );
-    }
-    showStoryCard("성인이 된 뒤의 선택", "성인이 된 당신은 자신의 기술과 관계를 활용해 살아갑니다. 오늘의 선택도 도시와 당신의 미래에 작은 흔적을 남깁니다.", choices);
+    showStoryCard("성인이 된 뒤의 선택", "자신의 기술과 관계를 활용해 살아갑니다.", [
+        { text: "일에 집중해 돈을 모은다 (재정 +150)", action: () => { gameState.city.gold += 150; addHistory("생업", "자원을 모았다."); } },
+        { text: "이웃의 일을 돕는다 (사기 +5)", action: () => { changeCity("morale", 5); addHistory("협력", "이웃을 도왔다."); } }
+    ]);
 }
 
 function appendQuietYearLog() {
     const log = document.getElementById("story-log");
     if (!log) return;
-
     const card = document.createElement("div");
     card.className = "event-card";
-    card.style.opacity = "0.78";
-    card.style.borderLeftColor = "var(--text-muted)";
-
-    const header = document.createElement("div");
-    header.className = "event-header";
-    header.innerHTML = `<span>AD ${gameState.year}</span><span>${gameState.age}세</span>`;
-
-    const title = document.createElement("div");
-    title.className = "event-title";
-    title.style.fontSize = "0.95rem";
-    title.textContent = "평온하게 지나간 한 해";
-
-    const desc = document.createElement("div");
-    desc.className = "event-desc";
-    desc.textContent = `별다른 사건 없이 한 해가 지났습니다. ${gameState.name}은(는) ${gameState.age}세가 되었고, 플로렌티아의 일상은 이어집니다.`;
-
-    card.append(header, title, desc);
+    card.style.opacity = "0.75";
+    card.innerHTML = `<div class="event-header"><span>AD ${gameState.year}</span><span>${gameState.age}세</span></div><div class="event-title" style="font-size:0.9rem">평온한 한 해</div><div class="event-desc" style="font-size:0.85rem">별다른 사건 없이 일상이 이어졌습니다.</div>`;
     log.appendChild(card);
     log.scrollTop = log.scrollHeight;
-
-    addHistory("평온하게 지나간 한 해", "별다른 사건 없이 일상을 보냈다.");
+    addHistory("평온한 한 해", "일상을 보냈다.");
 }
 
 function triggerRandomEvent() {
     gameState.quietYears = 0;
-    const eventPool = [
-        {
-            title: "시장 거리의 소문",
-            desc: "시장에는 물가가 오른다는 소문이 돕니다. 상인과 시민들은 각자 다른 걱정을 하고 있습니다.",
-            choices: [
-                { text: "필요한 물자를 미리 확보한다 (재정 -50, 감각 +1)", action: () => { gameState.city.gold -= 50; gameState.stats.sen += 1; addHistory("물자 확보", "물가 변동에 대비했다."); } },
-                { text: "상인들과 가격을 협상한다 (수완 +2)", action: () => { gameState.stats.dex += 2; gameState.city.gold += 30; addHistory("가격 협상", "상인들과 협상해 약간의 이익을 얻었다."); } }
-            ]
-        },
-        {
-            title: "이웃의 부탁",
-            desc: "이웃이 작은 도움을 요청합니다. 시간을 내면 내 일은 늦어지지만 관계는 달라질 수 있습니다.",
-            choices: [
-                { text: "이웃을 돕는다 (사기 +4, 매력 +1)", action: () => { changeCity("morale", 4); gameState.stats.cha += 1; addHistory("이웃의 부탁", "이웃을 도우며 신뢰를 쌓았다."); } },
-                { text: "내 일에 집중한다 (재정 +80)", action: () => { gameState.city.gold += 80; addHistory("생업에 집중", "자신의 일을 마무리했다."); } }
-            ]
-        },
-        {
-            title: "공공 우물 정비",
-            desc: "공공 우물 주변이 어수선해졌습니다. 지금 손보면 비용이 들지만 시민들이 이용하기 편해집니다.",
-            choices: [
-                { text: "우물 주변을 정리한다 (위생 +5, 재정 -60)", action: () => { changeCity("sanitation", 5); gameState.city.gold -= 60; addHistory("우물 주변 정비", "공공 공간을 정비했다."); } },
-                { text: "다른 일부터 처리한다 (지능 +1)", action: () => { gameState.stats.int += 1; addHistory("우물 정비 연기", "다른 일부터 처리하기로 했다."); } }
-            ]
-        }
-    ];
-    const picked = eventPool[Math.floor(Math.random() * eventPool.length)];
-    showStoryCard(picked.title, picked.desc, picked.choices);
+    showStoryCard("시장 거리의 소문", "시장에는 물가가 오른다는 소문이 돕니다.", [
+        { text: "필요한 물자를 미리 확보한다 (재정 -50)", action: () => { gameState.city.gold -= 50; addHistory("물자 확보", "대비했다."); } },
+        { text: "상인들과 가격을 협상한다 (수완 +2)", action: () => { gameState.stats.dex += 2; addHistory("협상", "이익을 얻었다."); } }
+    ]);
 }
 
 function triggerPlagueOutbreak() {
     gameState.plagueActive = true;
-    addHistory("흑사병의 전조", "항구에서 이상 징후가 보고되었다.");
-    showStoryCard("흑사병의 전조 (AD 1348)", "항구에 도착한 배에서 죽은 쥐들이 발견되고 선원들이 심하게 앓기 시작했습니다. 도시는 교역을 유지할지, 확산 가능성을 줄이기 위해 조치를 취할지 결정해야 합니다.", [
-        { text: "항구를 임시로 통제하고 상황을 조사한다 (재정 -200, 위생 +10)", action: () => {
-            gameState.city.gold -= 200;
-            changeCity("sanitation", 10);
-            changeCity("infection", 8);
-            addHistory("항구 임시 통제", "교역 손실을 감수하고 항구를 통제했다.");
-            showEduModal("당시 일부 항구 도시에서는 감염병 확산을 막기 위해 도착한 선박과 사람의 이동을 제한했습니다. '격리'는 감염병이 퍼질 가능성을 줄이려는 조치였지만, 당시 사람들은 질병이 전파되는 정확한 원인을 알지 못했습니다.");
+    showStoryCard("흑사병의 전조 (AD 1348)", "항구 배에서 죽은 쥐들이 발견되고 선원들이 앓기 시작했습니다.", [
+        { text: "항구를 임시로 통제하고 조사한다 (재정 -200, 위생 +10)", action: () => {
+            gameState.city.gold -= 200; changeCity("sanitation", 10); changeCity("infection", 8);
+            addHistory("항구 통제", "교역 손실을 감수하고 통제했다.");
+            showEduModal("14세기 항구 도시들은 감염병 확산을 막기 위해 격리(Quarantine) 제도를 도입했습니다.");
         }},
-        { text: "교역을 계속해 당장의 손실을 줄인다 (재정 +200, 감염률 상승)", action: () => {
-            gameState.city.gold += 200;
-            changeCity("infection", 25);
-            changeCity("morale", -5);
-            addHistory("교역 지속", "당장의 경제적 손실은 줄였지만 감염 위험이 커졌다.");
-        }},
-        { text: "시민들에게 상황을 알리고 구호 준비를 시작한다 (사기 +5, 재정 -100)", action: () => {
-            gameState.city.gold -= 100;
-            changeCity("morale", 5);
-            changeCity("infection", 12);
-            addHistory("구호 준비", "시민들에게 상황을 알리고 구호 물자를 준비했다.");
+        { text: "교역을 계속해 손실을 줄인다 (재정 +200, 감염 폭증)", action: () => {
+            gameState.city.gold += 200; changeCity("infection", 25);
+            addHistory("교역 지속", "감염 위험이 커졌다.");
         }}
     ], "plague");
 }
 
 function showPlagueAftermath() {
     gameState.plagueResolved = true;
-    const choices = [
-        { text: "도시 위생과 생활 환경 개선에 투자한다 (재정 -200, 위생 +15)", action: () => {
-            gameState.city.gold -= 200; changeCity("sanitation", 15); changeCity("infection", -8);
-            addHistory("생활 환경 개선", "위생 환경을 개선하고 이후의 위험에 대비했다.");
-        }},
-        { text: "구호 활동과 시민 지원을 우선한다 (재정 -150, 사기 +15)", action: () => {
-            gameState.city.gold -= 150; changeCity("morale", 15); changeCity("infection", -4);
-            addHistory("시민 구호", "피해를 입은 시민들을 돕는 데 힘썼다.");
-        }},
-        { text: "재정을 아끼며 회복을 기다린다 (재정 +50, 사기 -5)", action: () => {
-            gameState.city.gold += 50; changeCity("morale", -5);
-            addHistory("회복을 기다림", "지출을 줄였지만 시민들의 불안은 이어졌다.");
-        }}
-    ];
-    showStoryCard("역병 이후의 도시", "몇 해가 흐른 뒤에도 도시는 여파를 겪고 있습니다. 한 번의 선택으로 모든 문제가 해결되지는 않습니다. 제한된 자원을 어디에 사용할지 결정해야 합니다.", choices, "plague");
+    showStoryCard("역병 이후의 도시", "도시는 여파를 겪고 있습니다. 자원을 어디에 사용할까요?", [
+        { text: "위생과 생활 환경 개선에 투자한다 (재정 -200, 위생 +15)", action: () => { gameState.city.gold -= 200; changeCity("sanitation", 15); addHistory("환경 개선", "위생에 투자했다."); } },
+        { text: "구호 활동과 시민 지원을 우선한다 (재정 -150, 사기 +15)", action: () => { gameState.city.gold -= 150; changeCity("morale", 15); addHistory("시민 구호", "지원을 우선했다."); } }
+    ], "plague");
 }
 
 function checkCityCrisis() {
     if (gameState.city.morale <= 0) {
-        showStoryCard("도시의 신뢰가 무너지다", "시민들의 불안과 불만이 커져 당신의 계획을 더는 함께 추진하기 어려워졌습니다. 관계를 회복할 기회가 필요합니다.", [
-            { text: "구호 활동을 조직한다 (재정 -100, 사기 +15)", action: () => { gameState.city.gold -= 100; changeCity("morale", 15); addHistory("구호 활동 조직", "시민들과 다시 협력할 기회를 만들었다."); } },
-            { text: "당분간 개인의 생업에 집중한다 (사기 +5)", action: () => { changeCity("morale", 5); addHistory("잠시 물러남", "갈등이 가라앉기를 기다렸다."); } }
-        ], "rare");
-        return true;
-    }
-    if (gameState.city.gold < -300) {
-        showStoryCard("도시 재정의 위기", "도시의 재정이 크게 흔들렸습니다. 당장 모든 계획을 추진하기는 어렵습니다.", [
-            { text: "상인들과 협상해 빚을 조정한다 (수완 +2, 재정 +150)", action: () => { gameState.stats.dex += 2; gameState.city.gold += 150; addHistory("재정 협상", "상인들과 협상해 재정 부담을 줄였다."); } },
-            { text: "지출을 줄이고 천천히 회복한다 (재정 +80, 사기 -3)", action: () => { gameState.city.gold += 80; changeCity("morale", -3); addHistory("지출 조정", "지출을 줄여 재정 회복을 시도했다."); } }
+        showStoryCard("도시의 신뢰 위기", "시민들의 불안과 불만이 커졌습니다.", [
+            { text: "구호 활동을 조직한다 (재정 -100, 사기 +15)", action: () => { gameState.city.gold -= 100; changeCity("morale", 15); addHistory("구호 조직", "신뢰를 회복했다."); } }
         ], "rare");
         return true;
     }
@@ -1050,16 +943,7 @@ function showStoryCard(title, desc, choices, type = "normal") {
     const log = document.getElementById("story-log");
     const card = document.createElement("div");
     card.className = `event-card ${type}`;
-    const header = document.createElement("div");
-    header.className = "event-header";
-    header.innerHTML = `<span>AD ${gameState.year}</span><span>${gameState.age}세</span>`;
-    const heading = document.createElement("div");
-    heading.className = "event-title";
-    heading.textContent = title;
-    const body = document.createElement("div");
-    body.className = "event-desc";
-    body.textContent = desc;
-    card.append(header, heading, body);
+    card.innerHTML = `<div class="event-header"><span>AD ${gameState.year}</span><span>${gameState.age}세</span></div><div class="event-title">${title}</div><div class="event-desc">${desc}</div>`;
     log.appendChild(card);
     log.scrollTop = log.scrollHeight;
     addHistory(title, "");
@@ -1071,18 +955,9 @@ function showStoryCard(title, desc, choices, type = "normal") {
         btn.className = `choice-btn ${choice.class || ""}`;
         btn.textContent = choice.text;
         btn.onclick = () => {
-            if (btn.disabled) return;
             [...choicesContainer.querySelectorAll("button")].forEach(b => b.disabled = true);
             choicesContainer.innerHTML = "";
-            try {
-                choice.action();
-            } catch (error) {
-                console.error("선택지 처리 오류:", error);
-                showStoryCard("예상하지 못한 문제", "선택을 처리하는 중 문제가 발생했습니다. 다른 선택을 통해 일대기를 계속할 수 있습니다.", [
-                    { text: "계속하기", action: () => {} }
-                ], "rare");
-                return;
-            }
+            choice.action();
             updateUI();
             if (!gameState.pendingEdu && !gameState.gameEnded) {
                 gameState.speed = 1;
@@ -1100,18 +975,13 @@ function unlockJob(jobId) {
         const saved = JSON.parse(localStorage.getItem("florentia_jobs") || "[]");
         if (!saved.includes(jobId)) saved.push(jobId);
         localStorage.setItem("florentia_jobs", JSON.stringify(saved));
-    } catch (error) {
-        console.warn("직업 해금 정보를 저장할 수 없습니다.", error);
-    }
+    } catch (e) {}
 }
 
 function loadUnlockedJobs() {
     try {
-        const saved = JSON.parse(localStorage.getItem("florentia_jobs") || "[]");
-        gameState.unlockedJobs = saved.filter(id => JOBS[id] && JOBS[id].type === "hidden");
-    } catch (error) {
-        gameState.unlockedJobs = [];
-    }
+        gameState.unlockedJobs = JSON.parse(localStorage.getItem("florentia_jobs") || "[]");
+    } catch (e) { gameState.unlockedJobs = []; }
 }
 
 function showEduModal(text) {
@@ -1132,10 +1002,8 @@ function closeEduModal() {
     }
 }
 
-function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-    }[char]));
+function escapeHTML(v) {
+    return String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
 }
 
 function endGame() {
@@ -1146,40 +1014,20 @@ function endGame() {
 
     let title = "플로렌티아의 한 생애";
     let desc = `${gameState.name}은(는) 많은 선택과 변화를 겪으며 삶을 마무리했습니다.`;
-    if (gameState.plagueActive && gameState.city.infection >= 60) {
-        title = "역병의 기억을 남기다";
-        desc = "도시는 큰 어려움을 겪었지만, 당신이 남긴 기록과 선택은 다음 세대가 위험에 대비하는 데 참고가 되었습니다.";
-    } else if (gameState.city.sanitation >= 75 && gameState.city.morale >= 60) {
+    if (gameState.city.sanitation >= 75) {
         title = "회복을 이끈 시민";
-        desc = "도시의 생활 환경과 시민들의 신뢰를 꾸준히 돌본 삶이었습니다. 모든 문제를 해결하지는 못했지만, 플로렌티아가 회복할 기반을 남겼습니다.";
-    } else if (gameState.job === "역사 기록자" || gameState.stats.int >= 25) {
-        title = "기록과 지식의 유산";
-        desc = "관찰과 기록을 통해 시대의 변화를 남겼습니다. 당신의 기록은 훗날 도시가 과거의 경험을 돌아보는 자료가 되었습니다.";
-    } else if (gameState.city.gold >= 1000) {
-        title = "번영을 남긴 삶";
-        desc = "자원을 모으고 기회를 활용해 도시의 경제에 기여했습니다. 당신의 삶은 생계와 공동체의 균형을 생각하게 합니다.";
+        desc = "도시의 환경과 신뢰를 돌보며 플로렌티아가 회복할 기반을 남겼습니다.";
     }
 
     gameState.ending = { title, desc, year: gameState.year, age: gameState.age, job: gameState.job || "무직" };
-    addHistory("생애의 마무리", title);
     try {
-        const pastLives = JSON.parse(localStorage.getItem("florentia_lives") || "[]");
-        pastLives.push({ name: gameState.name, ending: gameState.ending, history: gameState.history });
-        localStorage.setItem("florentia_lives", JSON.stringify(pastLives.slice(-20)));
-    } catch (error) {
-        console.warn("지난 삶을 저장할 수 없습니다.", error);
-    }
-    document.getElementById("edu-content").innerHTML = `<h3 style="color:var(--neon-cyan); margin-bottom:10px;">${escapeHTML(title)}</h3><p>${escapeHTML(desc)}</p><p style="margin-top:12px;color:var(--text-muted);">직업: ${escapeHTML(gameState.job || "무직")} · 나이: ${gameState.age}세 · 연도: AD ${gameState.year}</p><button class="btn-primary" style="margin-top:16px;width:100%;" onclick="restartGame()">새로운 삶 시작하기</button>`;
+        const lives = JSON.parse(localStorage.getItem("florentia_lives") || "[]");
+        lives.push({ name: gameState.name, ending: gameState.ending, history: gameState.history });
+        localStorage.setItem("florentia_lives", JSON.stringify(lives.slice(-20)));
+    } catch (e) {}
+
+    document.getElementById("edu-content").innerHTML = `<h3 style="color:var(--neon-cyan); margin-bottom:8px;">${escapeHTML(title)}</h3><p>${escapeHTML(desc)}</p><button class="btn-primary" style="margin-top:14px;width:100%;max-width:100%;" onclick="restartGame()">새로운 삶 시작</button>`;
     openModal("modal-edu");
-    document.querySelector("#modal-edu .modal-header span").innerHTML = '<i class="fa-solid fa-book-medical"></i> 생애의 결말';
-    const endingButton = document.querySelector("#modal-edu .modal-body > button");
-    endingButton.textContent = "기록 확인";
-    endingButton.onclick = () => {
-        closeModal("modal-edu");
-        gameState.pendingEdu = false;
-        openModal("modal-history");
-    };
-    renderCodex();
 }
 
 function restartGame() {
@@ -1197,57 +1045,34 @@ function restartGame() {
     document.getElementById("player-name-input").value = "레오나르도";
     document.getElementById("start-overlay").style.display = "flex";
     document.getElementById("modal-edu").style.display = "none";
-    document.querySelector("#modal-edu .modal-header span").innerHTML = '<i class="fa-solid fa-book-medical"></i> 역사 & 의학 노트';
-    const eduButton = document.querySelector("#modal-edu .modal-body > button");
-    eduButton.textContent = "이해했습니다";
-    eduButton.onclick = closeEduModal;
     updateUI();
-    renderCodex();
 }
 
 function showHistoryModal() {
+    let lives = [];
+    try { lives = JSON.parse(localStorage.getItem("florentia_lives") || "[]"); } catch (e) {}
     const body = document.getElementById("history-list-body");
-    let pastLives = [];
-    try { pastLives = JSON.parse(localStorage.getItem("florentia_lives") || "[]"); } catch (error) { pastLives = []; }
-    const pastHtml = pastLives.slice().reverse().map(life => {
-        const ending = life.ending || {};
-        const events = (life.history || []).slice(-6).map(item =>
-            `<div style="color:var(--text-muted);font-size:.82rem;">AD ${item.year} · ${escapeHTML(item.title)}</div>`
-        ).join("");
-        return `<div style="padding:12px 0;border-bottom:1px solid var(--panel-border);"><strong>${escapeHTML(life.name || "이름 없는 인물")} — ${escapeHTML(ending.title || "결말 미기록")}</strong><div style="font-size:.85rem;color:var(--text-muted);">${escapeHTML(ending.job || "무직")} · ${ending.age || "?"}세 · AD ${ending.year || "?"}</div>${events}</div>`;
-    }).join("");
-    const currentHtml = gameState.history.length
-        ? `<h3 style="color:var(--neon-cyan);margin:12px 0 6px;">현재 일대기</h3>${gameState.history.slice().reverse().map(item => `<div style="padding:6px 0;border-bottom:1px solid var(--panel-border);"><strong>AD ${item.year} · ${item.age}세</strong><div>${escapeHTML(item.title)}</div></div>`).join("")}`
-        : "";
-    body.innerHTML = `${pastHtml ? `<h3 style="color:var(--neon-cyan);margin-bottom:6px;">완료한 일대기</h3>${pastHtml}` : `<p>완료된 일대기가 없습니다. 게임을 마치면 이곳에 기록됩니다.</p>`}${currentHtml}`;
+    body.innerHTML = lives.length ? lives.slice().reverse().map(l => `<div style="padding:8px 0;border-bottom:1px solid var(--panel-border)"><strong>${escapeHTML(l.name)} — ${escapeHTML(l.ending.title)}</strong><div style="font-size:0.8rem;color:var(--text-muted)">${escapeHTML(l.ending.job)} · ${l.ending.age}세</div></div>`).join("") : "기록된 지난 삶이 없습니다.";
 }
 
 function renderCodex() {
     const body = document.getElementById("codex-list-body");
     if (!body) return;
-    const jobsHtml = Object.entries(JOBS).map(([id, job]) => {
-        const unlocked = job.type === "basic" || gameState.unlockedJobs.includes(id);
-        return `<div style="padding:8px 0;border-bottom:1px solid var(--panel-border);"><strong>${unlocked ? escapeHTML(job.name) : "??? (숨겨진 직업)"}</strong><div style="color:var(--text-muted);font-size:.85rem;">${unlocked ? escapeHTML(job.desc) : "특별한 사건을 통해 단서를 발견할 수 있습니다."}</div></div>`;
+    const jobsHtml = Object.entries(JOBS).map(([id, j]) => {
+        const unlocked = j.type === "basic" || gameState.unlockedJobs.includes(id);
+        return `<div><strong>${unlocked ? escapeHTML(j.name) : "??? (숨겨진 직업)"}</strong><div style="font-size:0.8rem;color:var(--text-muted)">${unlocked ? escapeHTML(j.desc) : "특정 이벤트 단서 필요"}</div></div>`;
     }).join("");
-    const endingHtml = gameState.ending
-        ? `<h3 style="margin-top:12px;color:var(--neon-amber);">이번 생의 결말</h3><p><strong>${escapeHTML(gameState.ending.title)}</strong></p><p>${escapeHTML(gameState.ending.desc)}</p>`
-        : `<p style="margin-top:12px;color:var(--text-muted);">아직 이번 생의 결말이 기록되지 않았습니다.</p>`;
-    body.innerHTML = `<h3 style="color:var(--neon-cyan);">직업 도감</h3>${jobsHtml}${endingHtml}`;
+    body.innerHTML = `<h4 style="color:var(--neon-cyan)">직업 도감</h4>${jobsHtml}`;
 }
 
 function openModal(id) {
-    const modal = document.getElementById(id);
-    if (modal) modal.style.display = "flex";
+    document.getElementById(id).style.display = "flex";
     if (id === "modal-codex") renderCodex();
     if (id === "modal-history") showHistoryModal();
 }
-function closeModal(id) {
-    const modal = document.getElementById(id);
-    if (modal) modal.style.display = "none";
-}
+function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
 loadUnlockedJobs();
-renderCodex();
 </script>
 </body>
 </html>
