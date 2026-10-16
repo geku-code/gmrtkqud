@@ -303,11 +303,6 @@
             color: #fff;
         }
 
-        .choice-btn.hidden-route {
-            border-color: var(--neon-purple);
-            background: rgba(189, 0, 255, 0.08);
-        }
-
         .traits-container-box {
             background: rgba(0,0,0,0.3);
             border: 1px solid var(--panel-border);
@@ -539,7 +534,7 @@
 
     <footer style="background:var(--panel-bg); border-top:1px solid var(--panel-border); padding:0 15px; display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
         <div><i class="fa-solid fa-shield-halved"></i> 안정 구동</div>
-        <div>플로렌티아 v2.9 (자동 알림 연출)</div>
+        <div>플로렌티아 v3.0 (마녀사냥 엔딩 추가)</div>
     </footer>
 </div>
 
@@ -599,7 +594,7 @@
 
 <div class="modal" id="modal-codex">
     <div class="modal-content">
-        <div class="modal-header"><span>직업 및 엔딩 도감</span><button class="btn-secondary" onclick="closeModal('modal-codex')" style="padding:4px 8px;">닫기</button></div>
+        <div class="modal-header"><span>직업 및 엔딩 도감</span><button class="btn-secondary" onclick="openModal('modal-codex')" style="padding:4px 8px;">닫기</button></div>
         <div class="modal-body" id="codex-list-body"></div>
     </div>
 </div>
@@ -775,7 +770,7 @@ function checkAgeMilestone() {
             { text: "광장에서 열린 검술과 신체 단련 (체력 +5)", action: () => { gameState.stats.phy += 5; return "지치지 않는 체력과 튼튼한 골격을 자랑했다."; } },
             { text: "도시 성벽 끝에서 바라본 거친 들판 (면역 +5)", action: () => { gameState.stats.imm += 5; return "외부 환경에 흔들리지 않는 강인한 면역력을 길렀다."; } },
             { text: "뒷골목 아이들과의 활기찬 숨바꼭질 (수완 +3, 감각 +2)", action: () => { gameState.stats.dex += 3; gameState.stats.sen += 2; return "도시의 골목길 구조와 눈썰미를 빠르게 익혔다."; } },
-            { text: "연금술사와 장인의 작업실에서 주워들은 기록 (지능 +3, 감각 +2)", action: () => { gameState.stats.int += 3; gameState.stats.sen += 2; return "물질의 이치와 비밀스러운 지식에 매료되었다."; } }
+            { text: "연금술사와 장인의 작업실에서 주워들건 기록 (지능 +3, 감각 +2)", action: () => { gameState.stats.int += 3; gameState.stats.sen += 2; return "물질의 이치와 비밀스러운 지식에 매료되었다."; } }
         ], "milestone");
         return true;
     }
@@ -794,18 +789,53 @@ function checkAgeMilestone() {
         triggerPlagueOutbreak();
         return true;
     }
+    // [개편된 33세 마녀사냥 이벤트 - 대인관계(매력)에 따른 플레이어 누명 엔딩 분기]
     if (gameState.age === 33 && gameState.plagueActive) {
-        showStoryCard("광기와 마녀사냥의 소문 (강제 이벤트)", "역병의 참상이 길어지자, 광기 어린 군중이 누군가의 저주 때문이라며 무고한 이를 지목하려 합니다.", [
-            { text: "군중을 설득해 이성을 찾도록 진정시킨다", action: () => { gameState.stats.cha += 3; changeCity("morale", 5); return "차분한 설득으로 무고한 희생을 막아냈다."; } },
-            { text: "소용돌이에 휘말리지 않도록 조용히 피한다", action: () => { gameState.stats.sen += 2; return "위험한 분위기를 피해 안전을 도모했다."; } }
-        ], "plague");
-        return true;
+        if (gameState.stats.cha < 13) {
+            triggerWitchHuntEnding();
+            return true;
+        } else {
+            showStoryCard("광기와 마녀사냥의 소문 (강제 이벤트)", "역병의 참상이 길어지자, 광기 어린 군중이 누군가의 저주 때문이라며 무고한 이를 지목하려 합니다. 평소 원만한 관계 덕분에 화를 면했습니다.", [
+                { text: "군중을 설득해 이성을 찾도록 진정시킨다", action: () => { gameState.stats.cha += 3; changeCity("morale", 5); return "차분한 설득으로 무고한 희생을 막아냈다."; } },
+                { text: "소용돌이에 휘말리지 않도록 조용히 피한다", action: () => { gameState.stats.sen += 2; return "위험한 분위기를 피해 안전을 도모했다."; } }
+            ], "plague");
+            return true;
+        }
     }
     if (gameState.age >= 60) {
         endGame();
         return true;
     }
     return false;
+}
+
+// 대인관계가 나쁠 때(매력 낮음) 플레이어가 마녀사냥 희생양이 되는 엔딩 트리거
+function triggerWitchHuntEnding() {
+    if (gameState.timer) clearInterval(gameState.timer);
+    gameState.timer = null;
+    gameState.speed = 0;
+    gameState.gameEnded = true;
+
+    const title = "광기의 희생양 (마녀사냥 누명 엔딩)";
+    const desc = "평소 이웃들과 벽을 쌓고 평판을 돌보지 않은 탓에, 역병의 공포에 사로잡힌 군중은 당신을 '역병을 불러온 마녀/이단자'로 지목했습니다. 변명의 여지도 없이 광장으로 끌려간 당신은 차가운 시선 속에서 비참한 최후를 맞이합니다.";
+
+    gameState.ending = { title, desc, year: gameState.year, age: gameState.age, job: gameState.job || "무직" };
+    try {
+        const lives = JSON.parse(localStorage.getItem("florentia_lives") || "[]");
+        lives.push({ name: `${gameState.name} (${gameState.gender[0]})`, ending: gameState.ending, history: gameState.history });
+        localStorage.setItem("florentia_lives", JSON.stringify(lives.slice(-20)));
+    } catch (e) {}
+
+    const log = document.getElementById("story-log");
+    const card = document.createElement("div");
+    card.className = "event-card plague";
+    card.innerHTML = `<div class="event-header"><span>AD ${gameState.year}</span><span>${gameState.age}세</span></div><div class="event-title" style="color:var(--neon-crimson);">${title}</div><div class="event-desc">${desc}</div>`;
+    log.appendChild(card);
+    log.scrollTop = log.scrollHeight;
+    addHistory("비극적 최후", "마녀사냥의 누명을 쓰고 처형당함");
+
+    document.getElementById("edu-content").innerHTML = `<h3 style="color:var(--neon-crimson); margin-bottom:8px;">${escapeHTML(title)}</h3><p>${escapeHTML(desc)}</p><button class="btn-primary" style="margin-top:14px;width:100%;max-width:100%;" onclick="restartGame()">새로운 삶 시작</button>`;
+    openModal("modal-edu");
 }
 
 function showJobSelection() {
@@ -833,7 +863,6 @@ function appendQuietYearLog() {
     addHistory("평온한 한 해", "일상을 보냈다.");
 }
 
-// 소소한 일상 알림 이벤트 (선택지 없이 로그에 추가되고 게임 자동 진행)
 function triggerAmbientOrRandomEvent() {
     gameState.quietYears = 0;
 
@@ -884,7 +913,6 @@ function triggerAmbientOrRandomEvent() {
     showAmbientNotification(picked.title, picked.desc);
 }
 
-// 선택지 없이 알림 카드를 로그에 쌓고 게임을 멈추지 않고 계속 루프 실행
 function showAmbientNotification(title, desc) {
     const log = document.getElementById("story-log");
     const card = document.createElement("div");
@@ -895,7 +923,6 @@ function showAmbientNotification(title, desc) {
     addHistory(title, "소소한 일상 알림");
 
     updateUI();
-    // 일시정지하지 않고 현재 설정된 속도로 자연스럽게 진행
 }
 
 function triggerPlagueOutbreak() {
@@ -984,7 +1011,62 @@ function closeEduModal() {
     }
 }
 
-function openModal(id) { document.getElementById(id).style.display = "flex"; }
+function escapeHTML(v) {
+    return String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+}
+
+function endGame() {
+    if (gameState.gameEnded) return;
+    gameState.gameEnded = true;
+    if (gameState.timer) clearInterval(gameState.timer);
+    gameState.timer = null;
+
+    let title = "플로렌티아의 평범한 삶";
+    let desc = `${gameState.name}은(는) 기나긴 역병의 세월을 견뎌내며 일생을 마무리했습니다.`;
+    if (gameState.city.sanitation >= 75) {
+        title = "회복을 이끈 구원자";
+        desc = "도시의 위생과 신뢰를 지켜내며 플로렌티아의 황금기를 다시 열어젖혔습니다.";
+    }
+
+    gameState.ending = { title, desc, year: gameState.year, age: gameState.age, job: gameState.job || "무직" };
+    try {
+        const lives = JSON.parse(localStorage.getItem("florentia_lives") || "[]");
+        lives.push({ name: `${gameState.name} (${gameState.gender[0]})`, ending: gameState.ending, history: gameState.history });
+        localStorage.setItem("florentia_lives", JSON.stringify(lives.slice(-20)));
+    } catch (e) {}
+
+    document.getElementById("edu-content").innerHTML = `<h3 style="color:var(--neon-cyan); margin-bottom:8px;">${escapeHTML(title)}</h3><p>${escapeHTML(desc)}</p><button class="btn-primary" style="margin-top:14px;width:100%;max-width:100%;" onclick="restartGame()">새로운 삶 시작</button>`;
+    openModal("modal-edu");
+}
+
+function restartGame() {
+    if (gameState.timer) clearInterval(gameState.timer);
+    Object.assign(gameState, {
+        name: "레오나르도", gender: "남성", socialClass: "citizen", year: 1320, age: 0, speed: 1, timer: null, quietYears: 0,
+        job: null, stats: { int: 10, phy: 10, sen: 10, cha: 10, dex: 10, imm: 10 },
+        city: { infection: 0, morale: 80, sanitation: 60, gold: 1000 }, traits: [], inventory: [],
+        unlockedJobs: [], history: [], pendingEdu: false, gameStarted: false, gameEnded: false,
+        plagueActive: false, plagueResolved: false, ending: null
+    });
+    document.getElementById("story-log").innerHTML = "";
+    document.getElementById("choices-container").innerHTML = "";
+    document.getElementById("player-name-input").value = "레오나르도";
+    document.getElementById("start-overlay").style.display = "flex";
+    document.getElementById("modal-edu").style.display = "none";
+    updateUI();
+}
+
+function showHistoryModal() {
+    let lives = [];
+    try { lives = JSON.parse(localStorage.getItem("florentia_lives") || "[]"); } catch (e) {}
+    const body = document.getElementById("history-list-body");
+    body.innerHTML = lives.length ? lives.slice().reverse().map(l => `<div style="padding:8px 0;border-bottom:1px solid var(--panel-border)"><strong>${escapeHTML(l.name)} — ${escapeHTML(l.ending.title)}</strong><div style="font-size:0.8rem;color:var(--text-muted)">${escapeHTML(l.ending.job)} · ${l.ending.age}세</div></div>`).join("") : "기록된 지난 삶이 없습니다.";
+}
+
+function openModal(id) {
+    document.getElementById(id).style.display = "flex";
+    if (id === "modal-history") showHistoryModal();
+}
 function closeModal(id) { document.getElementById(id).style.display = "none"; }
 </script>
 </body>
